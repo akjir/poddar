@@ -1,0 +1,14 @@
+# PodDar Config
+
+# Options
+dryrun: true # default is true to prevent unintentional executions
+
+# PodConfigs
+configs:
+  path: "." # location of PodConfigs
+  sinlge: [] # active PodConfigs, which aren't clustered
+  cluster: [] # active PodConfig cluster
+
+# Pods
+pods:
+  path: "/pods" # default path for pod data

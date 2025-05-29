@@ -1,0 +1,8 @@
+# PodConfig
+
+name: "basic"
+pod:
+  registry: "registry.io"
+containers:
+  - app:
+      image: "basic:latest"
