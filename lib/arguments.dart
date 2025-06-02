@@ -19,6 +19,7 @@ import 'package:poddar/constant.dart' show validActions;
 
 class Arguments {
   final bool showHelp;
+  final bool dryRun;
   final String error;
   final String config;
   final String action;
@@ -26,6 +27,7 @@ class Arguments {
 
   Arguments({
     this.showHelp = false,
+    this.dryRun = false,
     this.error = "",
     this.config = "",
     this.action = "",
@@ -41,6 +43,7 @@ Arguments parseAndValidateArguments(List<String> arguments) {
   var config = "";
   var action = "";
   var targets = <String>[];
+  var dryRun = false;
 
   for (int i = 0; i < arguments.length; i++) {
     var argument = arguments[i];
@@ -63,8 +66,10 @@ Arguments parseAndValidateArguments(List<String> arguments) {
         } else {
           return (Arguments(error: "Missing argument for '--config'."));
         }
+      } else if (argument == "--dryrun") {
+        dryRun = true;
       } else {
-        return (Arguments(error: "Unknown argument '$argument'."));
+        return (Arguments(error: "Unknown option '$argument'."));
       }
     } else {
       if (action == "") {
@@ -85,5 +90,10 @@ Arguments parseAndValidateArguments(List<String> arguments) {
   if (targets.isEmpty) {
     return (Arguments(error: "Missing target."));
   }
-  return Arguments(config: config, action: action, targets: targets);
+  return Arguments(
+    config: config,
+    dryRun: dryRun,
+    action: action,
+    targets: targets,
+  );
 }

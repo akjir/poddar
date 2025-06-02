@@ -47,5 +47,8 @@ void _printHelp() {
   print(
     "  --config [NAME]    use config with given name ('.yaml' is optional)",
   );
+  print(
+    "  --dryrun           print intended commands without actual execution",
+  );
   print("  --help             display this help and exit");
 }

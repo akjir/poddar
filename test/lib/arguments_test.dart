@@ -58,18 +58,18 @@ void main() {
       expect(result.error, isEmpty);
     });
 
-    test("should return error for unknown argument", () {
+    test("should return error for unknown option", () {
       final result = parseAndValidateArguments(["--unknown"]);
-      expect(result.error, "Unknown argument '--unknown'.");
+      expect(result.error, "Unknown option '--unknown'.");
     });
 
-    test("should return error for unknown argument", () {
+    test("should return error for unknown option after --config", () {
       final result = parseAndValidateArguments([
         "--config",
         "myconfig.yaml",
         "--unknown",
       ]);
-      expect(result.error, "Unknown argument '--unknown'.");
+      expect(result.error, "Unknown option '--unknown'.");
     });
 
     test("should return error for unknown action", () {
@@ -133,7 +133,7 @@ void main() {
     test("should prioritize --help even with other arguments present", () {
       final result = parseAndValidateArguments([
         "--config",
-        "config",
+        "myconfig",
         "recreate",
         "target1",
         "--help",
@@ -162,8 +162,50 @@ void main() {
         expect(
           result.showHelp,
           isFalse,
-        ); // Error for --config should be caught first
+        ); // error for --config should be caught first
       },
     );
+
+    test("should correctly parse --dryrun option", () {
+      final result = parseAndValidateArguments([
+        "--dryrun",
+        "create",
+        "target",
+      ]);
+      expect(result.dryRun, isTrue);
+      expect(result.action, "create");
+      expect(result.targets, equals(["target"]));
+      expect(result.error, isEmpty);
+      expect(result.showHelp, isFalse);
+    });
+
+    test("should correctly parse --dryrun with --config and action", () {
+      final result = parseAndValidateArguments([
+        "--config",
+        "myconfig",
+        "--dryrun",
+        "update",
+        "target1",
+      ]);
+      expect(result.dryRun, isTrue);
+      expect(result.config, "myconfig");
+      expect(result.action, "update");
+      expect(result.targets, equals(["target1"]));
+      expect(result.error, isEmpty);
+      expect(result.showHelp, isFalse);
+    });
+
+    test("should prioritize --help even if --dryrun is present", () {
+      final result = parseAndValidateArguments([
+        "--dryrun",
+        "--help",
+        "create", // no error because of missing targets
+      ]);
+      expect(result.showHelp, isTrue);
+      expect(result.dryRun, isFalse); // should be default as --help takes over
+      expect(result.error, isEmpty);
+      expect(result.action, isEmpty);
+      expect(result.targets, isEmpty);
+    });
   });
 }
