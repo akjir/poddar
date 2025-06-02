@@ -52,7 +52,7 @@ Arguments parseAndValidateArguments(List<String> arguments) {
         return (Arguments(showHelp: true));
       } else if (argument == "--config") {
         if (config != "") {
-          return (Arguments(error: "Duplicate argument '--config'."));
+          return (Arguments(error: "Duplicate option '--config'."));
         }
         if (i + 1 < arguments.length) {
           if (arguments[i + 1].startsWith("--")) {
@@ -64,9 +64,12 @@ Arguments parseAndValidateArguments(List<String> arguments) {
           }
           config = arguments[++i];
         } else {
-          return (Arguments(error: "Missing argument for '--config'."));
+          return (Arguments(error: "Missing value for '--config'."));
         }
       } else if (argument == "--dryrun") {
+        if (dryRun) {
+          return (Arguments(error: "Duplicate option '--dryrun'."));
+        }
         dryRun = true;
       } else {
         return (Arguments(error: "Unknown option '$argument'."));

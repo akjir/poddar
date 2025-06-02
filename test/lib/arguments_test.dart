@@ -39,12 +39,12 @@ void main() {
         "--config",
         "path2",
       ]);
-      expect(result.error, "Duplicate argument '--config'.");
+      expect(result.error, "Duplicate option '--config'.");
     });
 
     test("should return error for missing argument for --config", () {
       final result = parseAndValidateArguments(["--config"]);
-      expect(result.error, "Missing argument for '--config'.");
+      expect(result.error, "Missing value for '--config'.");
     });
 
     test("should correctly parse --config with a value", () {
@@ -206,6 +206,16 @@ void main() {
       expect(result.error, isEmpty);
       expect(result.action, isEmpty);
       expect(result.targets, isEmpty);
+    });
+
+    test("should return error for duplicate --dryrun argument", () {
+      final result = parseAndValidateArguments([
+        "--dryrun",
+        "create",
+        "--dryrun",
+        "target",
+      ]);
+      expect(result.error, "Duplicate option '--dryrun'.");
     });
   });
 }
