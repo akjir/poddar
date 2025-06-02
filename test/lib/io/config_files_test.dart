@@ -15,21 +15,15 @@
  * this program.  If not, see <https://www.gnu.org/licenses/>. 
  */
 
-import 'package:poddar/arguments.dart';
+import 'package:poddar/io/config_files.dart';
+import 'package:test/test.dart';
 
-class Configuration {
-  final bool dryRun;
-
-  Configuration({this.dryRun = false});
-}
-
-// Cofiguration, Error Message
-(Configuration, String) parseAndValidateConfiguration(Arguments arguments) {
-  var dryRun = false;
-
-  // arguments dryRun overrides config dryRun if true, better safe than sorry
-  if (arguments.dryRun) {
-    dryRun = true;
-  }
-  return (Configuration(dryRun: dryRun), "");
+void main() {
+  group("loadConfig", () {
+    test("should return error for empty file path", () async {
+      final (error, configMap) = await loadConfig("");
+      expect(error, "Configuration file path is empty.");
+      expect(configMap, isEmpty);
+    });
+  });
 }

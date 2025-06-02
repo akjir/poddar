@@ -6,9 +6,8 @@ repository: https://github.com/akjir/poddar/
 environment:
   sdk: ^3.8.0
 
-# Add regular dependencies here.
 dependencies:
-  path: ^1.8.0
+  yaml: ^3.1.3
 
 dev_dependencies:
   lints: ^5.0.0

@@ -17,15 +17,22 @@
 
 import 'package:poddar/arguments.dart' show parseAndValidateArguments;
 import 'package:poddar/constant.dart';
+import 'package:poddar/io/config_files.dart';
 
-void main(List<String> args) {
-  final arguments = parseAndValidateArguments(args);
-  if (arguments.error.isNotEmpty) {
-    print(arguments.error);
+void main(List<String> args) async {
+  final (error, arguments) = parseAndValidateArguments(args);
+  if (error.isNotEmpty) {
+    print(error);
   } else if (arguments.showHelp) {
     _printHelp();
   } else {
-    print(arguments.toString());
+    //final (error, configMap) = await loadConfig("configx.yaml");
+    //print(error);
+
+    // await loadAppConfig();
+
+    // load configuration file
+    // parse and validate configuration
   }
 }
 

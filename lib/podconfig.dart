@@ -15,21 +15,4 @@
  * this program.  If not, see <https://www.gnu.org/licenses/>. 
  */
 
-import 'package:poddar/arguments.dart';
-
-class Configuration {
-  final bool dryRun;
-
-  Configuration({this.dryRun = false});
-}
-
-// Cofiguration, Error Message
-(Configuration, String) parseAndValidateConfiguration(Arguments arguments) {
-  var dryRun = false;
-
-  // arguments dryRun overrides config dryRun if true, better safe than sorry
-  if (arguments.dryRun) {
-    dryRun = true;
-  }
-  return (Configuration(dryRun: dryRun), "");
-}
+// for future use?

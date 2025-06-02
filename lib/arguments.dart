@@ -20,7 +20,6 @@ import 'package:poddar/constant.dart' show validActions;
 class Arguments {
   final bool showHelp;
   final bool dryRun;
-  final String error;
   final String config;
   final String action;
   final List<String> targets;
@@ -28,16 +27,15 @@ class Arguments {
   Arguments({
     this.showHelp = false,
     this.dryRun = false,
-    this.error = "",
     this.config = "",
     this.action = "",
     this.targets = const [],
   });
 }
 
-Arguments parseAndValidateArguments(List<String> arguments) {
+(String, Arguments) parseAndValidateArguments(List<String> arguments) {
   if (arguments.isEmpty) {
-    return Arguments(showHelp: true);
+    return ("", Arguments(showHelp: true));
   }
 
   var config = "";
@@ -49,30 +47,30 @@ Arguments parseAndValidateArguments(List<String> arguments) {
     var argument = arguments[i];
     if (argument.startsWith("--")) {
       if (argument == "--help") {
-        return (Arguments(showHelp: true));
+        return ("", Arguments(showHelp: true));
       } else if (argument == "--config") {
         if (config != "") {
-          return (Arguments(error: "Duplicate option '--config'."));
+          return ("Duplicate option '--config'.", Arguments());
         }
         if (i + 1 < arguments.length) {
           if (arguments[i + 1].startsWith("--")) {
-            // Check if the next argument is an option
-            return (Arguments(
-              error:
-                  "Value for '--config' cannot be an option (e.g., start with '--').",
-            ));
+            // check if the next argument is an option
+            return (
+              "Value for '--config' cannot be an option (e.g., start with '--').",
+              Arguments(),
+            );
           }
           config = arguments[++i];
         } else {
-          return (Arguments(error: "Missing value for '--config'."));
+          return ("Missing value for '--config'.", Arguments());
         }
       } else if (argument == "--dryrun") {
         if (dryRun) {
-          return (Arguments(error: "Duplicate option '--dryrun'."));
+          return ("Duplicate option '--dryrun'.", Arguments());
         }
         dryRun = true;
       } else {
-        return (Arguments(error: "Unknown option '$argument'."));
+        return ("Unknown option '$argument'.", Arguments());
       }
     } else {
       if (action == "") {
@@ -80,7 +78,7 @@ Arguments parseAndValidateArguments(List<String> arguments) {
         if (validActions.contains(argument)) {
           action = argument;
         } else {
-          return (Arguments(error: "Unknown action '$argument'."));
+          return ("Unknown action '$argument'.", Arguments());
         }
       } else {
         targets.add(argument.toLowerCase());
@@ -88,15 +86,13 @@ Arguments parseAndValidateArguments(List<String> arguments) {
     }
   }
   if (action == "") {
-    return (Arguments(error: "Missing action."));
+    return ("Missing action.", Arguments());
   }
   if (targets.isEmpty) {
-    return (Arguments(error: "Missing target."));
+    return ("Missing target.", Arguments());
   }
-  return Arguments(
-    config: config,
-    dryRun: dryRun,
-    action: action,
-    targets: targets,
+  return (
+    "",
+    Arguments(config: config, dryRun: dryRun, action: action, targets: targets),
   );
 }

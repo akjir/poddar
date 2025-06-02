@@ -21,117 +21,120 @@ import 'package:poddar/arguments.dart';
 void main() {
   group("parseAndValidateArguments", () {
     test("should return showHelp true for no arguments", () {
-      final result = parseAndValidateArguments([]);
-      expect(result.showHelp, isTrue);
-      expect(result.error, isEmpty);
+      final (error, arguments) = parseAndValidateArguments([]);
+      expect(arguments.showHelp, isTrue);
+      expect(error, isEmpty);
     });
 
     test("should return showHelp true for --help", () {
-      final result = parseAndValidateArguments(["--help"]);
-      expect(result.showHelp, isTrue);
-      expect(result.error, isEmpty);
+      final (error, arguments) = parseAndValidateArguments(["--help"]);
+      expect(arguments.showHelp, isTrue);
+      expect(error, isEmpty);
     });
 
     test("should return error for duplicate --config argument", () {
-      final result = parseAndValidateArguments([
+      final (error, _) = parseAndValidateArguments([
         "--config",
         "path1",
         "--config",
         "path2",
       ]);
-      expect(result.error, "Duplicate option '--config'.");
+      expect(error, "Duplicate option '--config'.");
     });
 
     test("should return error for missing argument for --config", () {
-      final result = parseAndValidateArguments(["--config"]);
-      expect(result.error, "Missing value for '--config'.");
+      final (error, _) = parseAndValidateArguments(["--config"]);
+      expect(error, "Missing value for '--config'.");
     });
 
     test("should correctly parse --config with a value", () {
-      final result = parseAndValidateArguments([
+      final (error, arguments) = parseAndValidateArguments([
         "create",
         "target",
         "--config",
         "myconfig",
       ]);
-      expect(result.config, "myconfig");
-      expect(result.error, isEmpty);
+      expect(arguments.config, "myconfig");
+      expect(error, isEmpty);
     });
 
     test("should return error for unknown option", () {
-      final result = parseAndValidateArguments(["--unknown"]);
-      expect(result.error, "Unknown option '--unknown'.");
+      final (error, _) = parseAndValidateArguments(["--unknown"]);
+      expect(error, "Unknown option '--unknown'.");
     });
 
     test("should return error for unknown option after --config", () {
-      final result = parseAndValidateArguments([
+      final (error, _) = parseAndValidateArguments([
         "--config",
         "myconfig.yaml",
         "--unknown",
       ]);
-      expect(result.error, "Unknown option '--unknown'.");
+      expect(error, "Unknown option '--unknown'.");
     });
 
     test("should return error for unknown action", () {
-      final result = parseAndValidateArguments(["build"]);
-      expect(result.error, "Unknown action 'build'.");
+      final (error, _) = parseAndValidateArguments(["build"]);
+      expect(error, "Unknown action 'build'.");
     });
 
     test(
       "should return error for missing action when only options are provided",
       () {
-        final result = parseAndValidateArguments(["--config", "myconfig"]);
-        expect(result.error, "Missing action.");
+        final (error, _) = parseAndValidateArguments(["--config", "myconfig"]);
+        expect(error, "Missing action.");
       },
     );
 
     test("should return a valid action with a single target", () {
-      final result = parseAndValidateArguments(["CreAte", "tArgeT"]);
-      expect(result.action, "create");
-      expect(result.targets, equals(["target"]));
-      expect(result.error, isEmpty);
-      expect(result.showHelp, isFalse);
+      final (error, arguments) = parseAndValidateArguments([
+        "CreAte",
+        "tArgeT",
+      ]);
+      expect(arguments.action, "create");
+      expect(arguments.targets, equals(["target"]));
+      expect(arguments.showHelp, isFalse);
+      expect(error, isEmpty);
     });
 
     test(
       "should return error for missing target when an action is present but no targets",
       () {
-        final result = parseAndValidateArguments(["create"]);
+        final (error, _) = parseAndValidateArguments(["create"]);
         // action isn't important here
-        expect(result.error, "Missing target.");
+        expect(error, "Missing target.");
       },
     );
 
     test("should correctly parse multiple targets after an action", () {
-      final result = parseAndValidateArguments([
+      final (error, arguments) = parseAndValidateArguments([
         "update",
         "target1",
         "target2",
         "target3",
       ]);
-      expect(result.action, "update");
-      expect(result.targets, equals(["target1", "target2", "target3"]));
-      expect(result.error, isEmpty);
-      expect(result.showHelp, isFalse);
+      expect(arguments.action, "update");
+      expect(arguments.targets, equals(["target1", "target2", "target3"]));
+      expect(arguments.showHelp, isFalse);
+      expect(error, isEmpty);
     });
 
     test("should correctly parse --config, action, and multiple targets", () {
-      final result = parseAndValidateArguments([
+      final (error, arguments) = parseAndValidateArguments([
         "--config",
         "/path/to/myconfig",
         "recreate",
         "target1",
         "target2",
       ]);
-      expect(result.config, "/path/to/myconfig");
-      expect(result.action, "recreate");
-      expect(result.targets, equals(["target1", "target2"]));
-      expect(result.error, isEmpty);
-      expect(result.showHelp, isFalse);
+      expect(arguments.config, "/path/to/myconfig");
+      expect(arguments.action, "recreate");
+      expect(arguments.targets, equals(["target1", "target2"]));
+      expect(arguments.showHelp, isFalse);
+      expect(error, isEmpty);
     });
 
     test("should prioritize --help even with other arguments present", () {
-      final result = parseAndValidateArguments([
+      final (error, arguments) = parseAndValidateArguments([
         "--config",
         "myconfig",
         "recreate",
@@ -139,83 +142,89 @@ void main() {
         "--help",
         "target2",
       ]);
-      expect(result.showHelp, isTrue);
+      expect(arguments.showHelp, isTrue);
       // When --help is present and there is no other error, other fields
       // should ideally be in their default state or ignored as the help message
       // is the primary output. The current implementation of parseAndValidateArguments
       // returns immediately for --help when parsed.
-      expect(result.error, isEmpty);
-      expect(result.config, isEmpty);
-      expect(result.action, isEmpty);
-      expect(result.targets, isEmpty);
+      expect(arguments.config, isEmpty);
+      expect(arguments.action, isEmpty);
+      expect(arguments.targets, isEmpty);
+      expect(error, isEmpty);
     });
 
     test(
       "should return error if --config value is another option like --help",
       () {
-        final result = parseAndValidateArguments(["--config", "--help"]);
+        final (error, arguments) = parseAndValidateArguments([
+          "--config",
+          "--help",
+        ]);
         expect(
-          result.error,
+          error,
           "Value for '--config' cannot be an option (e.g., start with '--').",
         );
-        expect(result.config, isEmpty);
+        expect(arguments.config, isEmpty);
         expect(
-          result.showHelp,
+          arguments.showHelp,
           isFalse,
         ); // error for --config should be caught first
       },
     );
 
     test("should correctly parse --dryrun option", () {
-      final result = parseAndValidateArguments([
+      final (error, arguments) = parseAndValidateArguments([
         "--dryrun",
         "create",
         "target",
       ]);
-      expect(result.dryRun, isTrue);
-      expect(result.action, "create");
-      expect(result.targets, equals(["target"]));
-      expect(result.error, isEmpty);
-      expect(result.showHelp, isFalse);
+      expect(arguments.dryRun, isTrue);
+      expect(arguments.action, "create");
+      expect(arguments.targets, equals(["target"]));
+      expect(arguments.showHelp, isFalse);
+      expect(error, isEmpty);
     });
 
     test("should correctly parse --dryrun with --config and action", () {
-      final result = parseAndValidateArguments([
+      final (error, arguments) = parseAndValidateArguments([
         "--config",
         "myconfig",
         "--dryrun",
         "update",
         "target1",
       ]);
-      expect(result.dryRun, isTrue);
-      expect(result.config, "myconfig");
-      expect(result.action, "update");
-      expect(result.targets, equals(["target1"]));
-      expect(result.error, isEmpty);
-      expect(result.showHelp, isFalse);
+      expect(arguments.dryRun, isTrue);
+      expect(arguments.config, "myconfig");
+      expect(arguments.action, "update");
+      expect(arguments.targets, equals(["target1"]));
+      expect(arguments.showHelp, isFalse);
+      expect(error, isEmpty);
     });
 
     test("should prioritize --help even if --dryrun is present", () {
-      final result = parseAndValidateArguments([
+      final (error, arguments) = parseAndValidateArguments([
         "--dryrun",
         "--help",
         "create", // no error because of missing targets
       ]);
-      expect(result.showHelp, isTrue);
-      expect(result.dryRun, isFalse); // should be default as --help takes over
-      expect(result.error, isEmpty);
-      expect(result.action, isEmpty);
-      expect(result.targets, isEmpty);
+      expect(arguments.showHelp, isTrue);
+      expect(
+        arguments.dryRun,
+        isFalse,
+      ); // should be default as --help takes over
+      expect(arguments.action, isEmpty);
+      expect(arguments.targets, isEmpty);
+      expect(error, isEmpty);
     });
 
     test("should return error for duplicate --dryrun argument", () {
-      final result = parseAndValidateArguments([
+      final (error, _) = parseAndValidateArguments([
         "--dryrun",
         "create",
         "--dryrun",
         "target",
       ]);
-      expect(result.error, "Duplicate option '--dryrun'.");
+      expect(error, "Duplicate option '--dryrun'.");
     });
   });
 }
