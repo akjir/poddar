@@ -6,8 +6,8 @@ dryrun: true # default is true to prevent unintentional executions
 # PodConfigs
 configs:
   path: "." # location of PodConfigs
-  sinlge: [] # active PodConfigs, which aren't clustered
-  cluster: [] # active PodConfig cluster
+  pods: [] # active PodConfigs, which aren't grouped
+  groups: [] # active PodConfig groups
 
 # Pods
 pods:

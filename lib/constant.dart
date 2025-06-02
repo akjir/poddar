@@ -15,4 +15,5 @@
  * this program.  If not, see <https://www.gnu.org/licenses/>. 
  */
 
-const String version = "2.0.0dev";
+const String version = "1.0.0dev";
+const List<String> validActions = ["create", "recreate", "remove", "update"];
