@@ -15,4 +15,17 @@
  * this program.  If not, see <https://www.gnu.org/licenses/>. 
  */
 
-// for future use
+import 'package:poddar/io/config_files.dart';
+
+class PodConfigData {
+  const PodConfigData();
+}
+
+Future<(String, PodConfigData)> loadPodConfig(final configPath) async {
+  final (error, configMap) = await loadConfig(configPath);
+  if (error.isNotEmpty) {
+    return (error, const PodConfigData());
+  }
+
+  return ("", const PodConfigData());
+}

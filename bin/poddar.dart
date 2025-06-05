@@ -17,7 +17,7 @@
 
 import 'package:poddar/arguments.dart' show parseAndValidateArguments;
 import 'package:poddar/constant.dart';
-import 'package:poddar/io/config_files.dart';
+import 'package:poddar/data/poddar_config.dart' show loadPoddarConfig;
 
 void main(List<String> args) async {
   final (error, arguments) = parseAndValidateArguments(args);
@@ -26,13 +26,18 @@ void main(List<String> args) async {
   } else if (arguments.showHelp) {
     _printHelp();
   } else {
-    //final (error, configMap) = await loadConfig("configx.yaml");
-    //print(error);
+    final poddarConfigFilePath = arguments.config.isNotEmpty
+        ? arguments.config
+        : poddarConfigFileName;
 
-    // await loadAppConfig();
-
-    // load configuration file
-    // parse and validate configuration
+    final (error, poddarConfigData) = await loadPoddarConfig(
+      poddarConfigFilePath,
+    );
+    if (error.isNotEmpty) {
+      print(error);
+    } else {
+      print(poddarConfigData);
+    }
   }
 }
 

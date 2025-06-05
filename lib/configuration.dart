@@ -16,20 +16,23 @@
  */
 
 import 'package:poddar/arguments.dart';
+import 'package:poddar/data/poddar_config.dart';
 
 class Configuration {
   final bool dryRun;
 
-  Configuration({this.dryRun = false});
+  Configuration(this.dryRun);
 }
 
-// Cofiguration, Error Message
-(Configuration, String) parseAndValidateConfiguration(Arguments arguments) {
-  var dryRun = false;
+(String, Configuration) parseAndValidateConfiguration(
+  PoddarConfigData poddarConfigData,
+  Arguments arguments,
+) {
+  var dryRun = poddarConfigData.dryRun;
 
   // arguments dryRun overrides config dryRun if true, better safe than sorry
   if (arguments.dryRun) {
     dryRun = true;
   }
-  return (Configuration(dryRun: dryRun), "");
+  return ("", Configuration(dryRun));
 }

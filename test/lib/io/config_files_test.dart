@@ -25,5 +25,37 @@ void main() {
       expect(error, "Configuration file path is empty.");
       expect(configMap, isEmpty);
     });
+
+    test("should return error for non-existent file name", () async {
+      final (error, configMap) = await loadConfig("notfound");
+      expect(error, "Configuration file not found: 'notfound.yaml'.");
+      expect(configMap, isEmpty);
+    });
+
+    test("should return error for non-existent file path", () async {
+      final (error, configMap) = await loadConfig("/unlikly/notfound");
+      expect(error, "Configuration file not found: '/unlikly/notfound.yaml'.");
+      expect(configMap, isEmpty);
+    });
+
+    test(
+      "should load a basic valid config file and parse the name field",
+      () async {
+        final (error, configMap) = await loadConfig("./test/configs/basic");
+        expect(configMap, isNotEmpty);
+        final name = configMap["name"];
+        expect(name, isA<String>());
+        expect(name, "basic");
+        expect(error, isEmpty);
+      },
+    );
+
+    test("should return null for unknown fields", () async {
+      /* mabye this test is unnecessary */
+      final (error, configMap) = await loadConfig("./test/configs/basic");
+      final unkown = configMap["unknown"];
+      expect(unkown, isNull);
+      expect(error, isEmpty);
+    });
   });
 }

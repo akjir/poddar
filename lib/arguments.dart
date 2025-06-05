@@ -24,7 +24,7 @@ class Arguments {
   final String action;
   final List<String> targets;
 
-  Arguments({
+  const Arguments({
     this.showHelp = false,
     this.dryRun = false,
     this.config = "",
@@ -35,7 +35,7 @@ class Arguments {
 
 (String, Arguments) parseAndValidateArguments(List<String> arguments) {
   if (arguments.isEmpty) {
-    return ("", Arguments(showHelp: true));
+    return ("", const Arguments(showHelp: true));
   }
 
   var config = "";
@@ -47,30 +47,30 @@ class Arguments {
     var argument = arguments[i];
     if (argument.startsWith("--")) {
       if (argument == "--help") {
-        return ("", Arguments(showHelp: true));
+        return ("", const Arguments(showHelp: true));
       } else if (argument == "--config") {
         if (config != "") {
-          return ("Duplicate option '--config'.", Arguments());
+          return ("Duplicate option '--config'.", const Arguments());
         }
         if (i + 1 < arguments.length) {
           if (arguments[i + 1].startsWith("--")) {
             // check if the next argument is an option
             return (
               "Value for '--config' cannot be an option (e.g., start with '--').",
-              Arguments(),
+              const Arguments(),
             );
           }
           config = arguments[++i];
         } else {
-          return ("Missing value for '--config'.", Arguments());
+          return ("Missing value for '--config'.", const Arguments());
         }
       } else if (argument == "--dryrun") {
         if (dryRun) {
-          return ("Duplicate option '--dryrun'.", Arguments());
+          return ("Duplicate option '--dryrun'.", const Arguments());
         }
         dryRun = true;
       } else {
-        return ("Unknown option '$argument'.", Arguments());
+        return ("Unknown option '$argument'.", const Arguments());
       }
     } else {
       if (action == "") {
@@ -78,7 +78,7 @@ class Arguments {
         if (validActions.contains(argument)) {
           action = argument;
         } else {
-          return ("Unknown action '$argument'.", Arguments());
+          return ("Unknown action '$argument'.", const Arguments());
         }
       } else {
         targets.add(argument.toLowerCase());
@@ -86,10 +86,10 @@ class Arguments {
     }
   }
   if (action == "") {
-    return ("Missing action.", Arguments());
+    return ("Missing action.", const Arguments());
   }
   if (targets.isEmpty) {
-    return ("Missing target.", Arguments());
+    return ("Missing target.", const Arguments());
   }
   return (
     "",
