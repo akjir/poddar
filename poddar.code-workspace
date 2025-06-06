@@ -8,6 +8,7 @@
 		"editor.formatOnSave": true,
 		"editor.insertSpaces": true,
 		"editor.tabSize": 4,
+		"files.autoSave": "onFocusChange",
 		"outline.collapseItems": "alwaysCollapse",
 	}
 }

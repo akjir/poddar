@@ -24,7 +24,7 @@ class PoddarConfigData {
   final Map<String, List<String>> configsGroups;
   final String podsPath;
 
-  PoddarConfigData({
+  const PoddarConfigData({
     this.dryRun = true,
     this.configsPath = "",
     this.configsPods = const [],
@@ -36,7 +36,7 @@ class PoddarConfigData {
 Future<(String, PoddarConfigData)> loadPoddarConfig(final configPath) async {
   final (error, configMap) = await loadConfig(configPath);
   if (error.isNotEmpty) {
-    return (error, PoddarConfigData());
+    return (error, const PoddarConfigData());
   }
 
   /* options */
@@ -53,6 +53,7 @@ Future<(String, PoddarConfigData)> loadPoddarConfig(final configPath) async {
   final rawConfigGroups = _getMap(configsData, "groups");
   final Map<String, List<String>> configsGroups = {};
   rawConfigGroups.forEach((key, value) {
+    // groups without value are ignored, value == null
     if (key is String && value is List) {
       final List<String> stringList = value
           .whereType<String>()

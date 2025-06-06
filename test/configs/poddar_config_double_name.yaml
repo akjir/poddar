@@ -1,0 +1,7 @@
+# PodDar Config
+
+configs:
+  pods: [pod1, pod2]
+  groups:
+    group1: [pod1, pod3, pod4]
+    pod1: [pdo2, pod3, pod5, pod42]

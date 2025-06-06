@@ -1,0 +1,6 @@
+# PodDar Config
+
+configs:
+  groups:
+    odin: [Baldr, Hodr]
+    empty: [null, 2] # empty groups are not allowed

@@ -15,9 +15,10 @@
  * this program.  If not, see <https://www.gnu.org/licenses/>. 
  */
 
-import 'package:poddar/arguments.dart' show parseAndValidateArguments;
+import 'package:poddar/arguments.dart';
+import 'package:poddar/configuration.dart';
 import 'package:poddar/constant.dart';
-import 'package:poddar/data/poddar_config.dart' show loadPoddarConfig;
+import 'package:poddar/data/poddar_config.dart';
 
 void main(List<String> args) async {
   final (error, arguments) = parseAndValidateArguments(args);
@@ -30,13 +31,21 @@ void main(List<String> args) async {
         ? arguments.config
         : poddarConfigFileName;
 
-    final (error, poddarConfigData) = await loadPoddarConfig(
+    final (errorPCD, poddarConfigData) = await loadPoddarConfig(
       poddarConfigFilePath,
     );
-    if (error.isNotEmpty) {
-      print(error);
+    if (errorPCD.isNotEmpty) {
+      print(errorPCD);
     } else {
-      print(poddarConfigData);
+      final (errorConf, configuration) = createAndValidateConfiguration(
+        poddarConfigData,
+        arguments,
+      );
+      if (errorConf.isNotEmpty) {
+        print(errorConf);
+      } else {
+        print(configuration);
+      }
     }
   }
 }

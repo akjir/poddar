@@ -9,6 +9,8 @@ configs:
   pods: [pod1, mega_pod, 42, poditlus, 21] # non-string values must be ignored
   groups:
     pocks: [pouey, powey, poiue]
+    null:
+    nullplus: [null, notnull]
     north: [Jon, 2, Ygritte]
 
 # Pods

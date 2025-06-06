@@ -25,17 +25,22 @@ void main() {
       expect(error, "Configuration file path is empty.");
     });
 
-    test("", () async {
-      final (error, pcd) = await loadPoddarConfig(
-        "./test/configs/poddar_config",
-      );
-      expect(pcd.dryRun, isTrue);
-      expect(pcd.configsPath, "./test/configs/");
-      expect(pcd.configsPods, equals(["pod1", "mega_pod", "poditlus"]));
-      expect(pcd.configsGroups.containsKey("pocks"), isTrue);
-      expect(pcd.configsGroups["north"], equals(["jon", "ygritte"]));
-      expect(pcd.podsPath, "/pods");
-      expect(error, isEmpty);
-    });
+    test(
+      "should correctly load and parse a valid configuration file",
+      () async {
+        final (error, pcd) = await loadPoddarConfig(
+          "./test/configs/poddar_config",
+        );
+        expect(pcd.dryRun, isTrue);
+        expect(pcd.configsPath, "./test/configs/");
+        expect(pcd.configsPods, equals(["pod1", "mega_pod", "poditlus"]));
+        expect(pcd.configsGroups.containsKey("pocks"), isTrue);
+        expect(pcd.configsGroups.containsKey("null"), isFalse);
+        expect(pcd.configsGroups["nullplus"], equals(["notnull"]));
+        expect(pcd.configsGroups["north"], equals(["jon", "ygritte"]));
+        expect(pcd.podsPath, "/pods");
+        expect(error, isEmpty);
+      },
+    );
   });
 }

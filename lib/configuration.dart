@@ -20,19 +20,76 @@ import 'package:poddar/data/poddar_config.dart';
 
 class Configuration {
   final bool dryRun;
+  final String action;
+  final List<String> targets;
+  final String configsPath;
+  final String podsPath;
 
-  Configuration(this.dryRun);
+  const Configuration({
+    this.dryRun = false,
+    this.action = "",
+    this.targets = const [],
+    this.configsPath = "",
+    this.podsPath = "",
+  });
 }
 
-(String, Configuration) parseAndValidateConfiguration(
+(String, Configuration) createAndValidateConfiguration(
   PoddarConfigData poddarConfigData,
   Arguments arguments,
 ) {
-  var dryRun = poddarConfigData.dryRun;
+  final pods = poddarConfigData.configsPods;
+  final groups = poddarConfigData.configsGroups;
 
-  // arguments dryRun overrides config dryRun if true, better safe than sorry
-  if (arguments.dryRun) {
-    dryRun = true;
+  for (final entry in groups.entries) {
+    if (entry.value.isEmpty) {
+      return ("Group '${entry.key}' cannot be emtpy!", const Configuration());
+    }
+    if (pods.contains(entry.key)) {
+      return (
+        "Group with name '${entry.key}' already defined as pod!",
+        const Configuration(),
+      );
+    }
   }
-  return ("", Configuration(dryRun));
+
+  final targets = arguments.targets;
+  // use Set, because all targets can be added only once
+  final Set<String> targetsSet = {};
+
+  for (final target in targets) {
+    // add target if found in pods list
+    if (pods.contains(target)) {
+      targetsSet.add(target);
+      // if target is group, add all targets defined in group
+    } else if (groups.containsKey(target)) {
+      targetsSet.addAll(groups[target]!);
+    } else {
+      // looking for target in all groups
+      var found = false;
+      for (final entry in groups.entries) {
+        if (entry.value.contains(target)) {
+          targetsSet.add(target);
+          found = true;
+          break;
+        }
+      }
+      // if target was not found, return error
+      if (!found) {
+        return ("Target '$target' not found in config!", const Configuration());
+      }
+    }
+  }
+
+  return (
+    "",
+    Configuration(
+      // arguments dryRun overrides config dryRun if true, better safe than sorry
+      dryRun: arguments.dryRun ? true : poddarConfigData.dryRun,
+      action: arguments.action,
+      targets: targetsSet.toList(),
+      configsPath: poddarConfigData.configsPath,
+      podsPath: poddarConfigData.podsPath,
+    ),
+  );
 }
