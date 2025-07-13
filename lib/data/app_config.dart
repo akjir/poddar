@@ -17,14 +17,14 @@
 
 import 'package:poddar/io/config_files.dart';
 
-class PoddarConfigData {
+class AppConfigData {
   final bool dryRun;
   final String configsPath;
   final List<String> configsPods;
   final Map<String, List<String>> configsGroups;
   final String podsPath;
 
-  const PoddarConfigData({
+  const AppConfigData({
     this.dryRun = true,
     this.configsPath = "",
     this.configsPods = const [],
@@ -33,10 +33,10 @@ class PoddarConfigData {
   });
 }
 
-Future<(String, PoddarConfigData)> loadPoddarConfig(final configPath) async {
-  final (error, configMap) = await loadConfig(configPath);
+Future<(String, AppConfigData)> readAppConfigData(final configPath) async {
+  final (error, configMap) = await readConfigData(configPath);
   if (error.isNotEmpty) {
-    return (error, const PoddarConfigData());
+    return (error, const AppConfigData());
   }
 
   /* options */
@@ -70,7 +70,7 @@ Future<(String, PoddarConfigData)> loadPoddarConfig(final configPath) async {
 
   return (
     "",
-    PoddarConfigData(
+    AppConfigData(
       dryRun: dryRun,
       configsPath: configsPath,
       configsPods: configsPods,

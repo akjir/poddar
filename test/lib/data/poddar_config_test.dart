@@ -15,30 +15,30 @@
  * this program.  If not, see <https://www.gnu.org/licenses/>. 
  */
 
-import 'package:poddar/data/poddar_config.dart';
+import 'package:poddar/data/app_config.dart';
 import 'package:test/test.dart';
 
 void main() {
   group("loadPoddarConfig", () {
     test("should return error for empty file path", () async {
-      final (error, poddarConfigData) = await loadPoddarConfig("");
+      final (error, _) = await readAppConfigData("");
       expect(error, "Configuration file path is empty.");
     });
 
     test(
       "should correctly load and parse a valid configuration file",
       () async {
-        final (error, pcd) = await loadPoddarConfig(
+        final (error, acd) = await readAppConfigData(
           "./test/configs/poddar_config",
         );
-        expect(pcd.dryRun, isTrue);
-        expect(pcd.configsPath, "./test/configs/");
-        expect(pcd.configsPods, equals(["pod1", "mega_pod", "poditlus"]));
-        expect(pcd.configsGroups.containsKey("pocks"), isTrue);
-        expect(pcd.configsGroups.containsKey("null"), isFalse);
-        expect(pcd.configsGroups["nullplus"], equals(["notnull"]));
-        expect(pcd.configsGroups["north"], equals(["jon", "ygritte"]));
-        expect(pcd.podsPath, "/pods");
+        expect(acd.dryRun, isFalse);
+        expect(acd.configsPath, "/configs/");
+        expect(acd.configsPods, equals(["pod1", "mega_pod", "poditlus"]));
+        expect(acd.configsGroups.containsKey("pocks"), isTrue);
+        expect(acd.configsGroups.containsKey("null"), isFalse);
+        expect(acd.configsGroups["nullplus"], equals(["notnull"]));
+        expect(acd.configsGroups["north"], equals(["jon", "ygritte"]));
+        expect(acd.podsPath, "/pods");
         expect(error, isEmpty);
       },
     );

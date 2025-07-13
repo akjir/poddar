@@ -18,7 +18,7 @@
 import 'dart:io';
 import 'package:yaml/yaml.dart';
 
-Future<(String, Map<String, dynamic>)> loadConfig(String filePath) async {
+Future<(String, Map<String, dynamic>)> readConfigData(String filePath) async {
   if (filePath.isEmpty) {
     return ("Configuration file path is empty.", <String, dynamic>{});
   }

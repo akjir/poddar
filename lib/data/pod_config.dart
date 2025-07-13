@@ -21,8 +21,8 @@ class PodConfigData {
   const PodConfigData();
 }
 
-Future<(String, PodConfigData)> loadPodConfig(final configPath) async {
-  final (error, configMap) = await loadConfig(configPath);
+Future<(String, PodConfigData)> readPodConfigData(String configPath) async {
+  final (error, configMap) = await readConfigData(configPath);
   if (error.isNotEmpty) {
     return (error, const PodConfigData());
   }

@@ -1,11 +1,11 @@
 # PodDar Config
 
 # Options
-dryrun: false
+dryrun: true
 
 # PodConfigs
 configs:
-  path: 3.14159 # invalid, have to be empty
+  path: test/configs
   pods: [pod1, pod2]
   groups:
     group1: [pod1, pod3, pod4]

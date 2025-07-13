@@ -17,41 +17,64 @@
 
 import 'package:poddar/arguments.dart';
 import 'package:poddar/configuration.dart';
-import 'package:poddar/constant.dart';
-import 'package:poddar/data/poddar_config.dart';
+import 'package:poddar/constant.dart' as constant;
+import 'package:poddar/data/pod_config.dart';
+import 'package:poddar/data/app_config.dart';
 
 void main(List<String> args) async {
-  final (error, arguments) = parseAndValidateArguments(args);
-  if (error.isNotEmpty) {
-    print(error);
+  // handle arguments
+  final (errorArguments, arguments) = parseAndValidateArguments(args);
+  if (errorArguments.isNotEmpty) {
+    print(errorArguments);
   } else if (arguments.showHelp) {
+    // print help and exit
     _printHelp();
   } else {
-    final poddarConfigFilePath = arguments.config.isNotEmpty
+    // if app config file path is not definded as an arguement us default
+    final appConfigFilePath = arguments.config.isNotEmpty
         ? arguments.config
-        : poddarConfigFileName;
-
-    final (errorPCD, poddarConfigData) = await loadPoddarConfig(
-      poddarConfigFilePath,
+        : constant.defaultAppConfigFilePath;
+    // read app config file
+    final (errorAppConfigData, appConfigData) = await readAppConfigData(
+      appConfigFilePath,
     );
-    if (errorPCD.isNotEmpty) {
-      print(errorPCD);
+    if (errorAppConfigData.isNotEmpty) {
+      print(errorAppConfigData);
     } else {
-      final (errorConf, configuration) = createAndValidateConfiguration(
-        poddarConfigData,
-        arguments,
-      );
-      if (errorConf.isNotEmpty) {
-        print(errorConf);
+      // create and validate app configuration
+      final (errorConfiguration, configuration) =
+          createAndValidateConfiguration(appConfigData, arguments);
+      if (errorConfiguration.isNotEmpty) {
+        print(errorConfiguration);
       } else {
-        print(configuration);
+        //
+        var errorPodConfiguration = "";
+        for (final target in configuration.targets) {
+          final (error, podConfigData) = await readPodConfigData(
+            configuration.configsPath + target,
+          );
+          if (error.isNotEmpty) {
+            errorPodConfiguration = error;
+            break;
+          } else {
+            print(target);
+            // command buffer, contains info or command
+            // buildCommands(commandBuffer?, podConfigData, configuration)
+          }
+        }
+
+        if (errorPodConfiguration.isNotEmpty) {
+          print(errorPodConfiguration);
+        } else {
+          // exec commands
+        }
       }
     }
   }
 }
 
 void _printHelp() {
-  print("PODDAR $version");
+  print("PODDAR ${constant.version}");
   print("");
   print("Usage: poddar [OPTIONS] ACTION [TARGETS]");
   print("");

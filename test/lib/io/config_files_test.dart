@@ -21,19 +21,19 @@ import 'package:test/test.dart';
 void main() {
   group("loadConfig", () {
     test("should return error for empty file path", () async {
-      final (error, configMap) = await loadConfig("");
+      final (error, configMap) = await readConfigData("");
       expect(error, "Configuration file path is empty.");
       expect(configMap, isEmpty);
     });
 
     test("should return error for non-existent file name", () async {
-      final (error, configMap) = await loadConfig("notfound");
+      final (error, configMap) = await readConfigData("notfound");
       expect(error, "Configuration file not found: 'notfound.yaml'.");
       expect(configMap, isEmpty);
     });
 
     test("should return error for non-existent file path", () async {
-      final (error, configMap) = await loadConfig("/unlikly/notfound");
+      final (error, configMap) = await readConfigData("/unlikly/notfound");
       expect(error, "Configuration file not found: '/unlikly/notfound.yaml'.");
       expect(configMap, isEmpty);
     });
@@ -41,7 +41,7 @@ void main() {
     test(
       "should load a basic valid config file and parse the name field",
       () async {
-        final (error, configMap) = await loadConfig("./test/configs/basic");
+        final (error, configMap) = await readConfigData("./test/configs/basic");
         expect(configMap, isNotEmpty);
         final name = configMap["name"];
         expect(name, isA<String>());
@@ -51,8 +51,8 @@ void main() {
     );
 
     test("should return null for unknown fields", () async {
-      /* mabye this test is unnecessary */
-      final (error, configMap) = await loadConfig("./test/configs/basic");
+      // mabye this test is unnecessary
+      final (error, configMap) = await readConfigData("./test/configs/basic");
       final unkown = configMap["unknown"];
       expect(unkown, isNull);
       expect(error, isEmpty);

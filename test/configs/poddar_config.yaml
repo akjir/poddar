@@ -1,11 +1,11 @@
 # PodDar Config
 
 # Options
-dryrun: true
+dryrun: false
 
 # PodConfigs
 configs:
-  path: ./test/configs/
+  path: /configs/
   pods: [pod1, mega_pod, 42, poditlus, 21] # non-string values must be ignored
   groups:
     pocks: [pouey, powey, poiue]

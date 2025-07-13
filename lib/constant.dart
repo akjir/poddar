@@ -16,5 +16,5 @@
  */
 
 const String version = "1.0.0dev";
-const String poddarConfigFileName = "config.yaml";
+const String defaultAppConfigFilePath = "./config.yaml";
 const List<String> validActions = ["create", "recreate", "remove", "update"];

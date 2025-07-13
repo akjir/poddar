@@ -16,7 +16,7 @@
  */
 
 import 'package:poddar/arguments.dart';
-import 'package:poddar/data/poddar_config.dart';
+import 'package:poddar/data/app_config.dart';
 
 class Configuration {
   final bool dryRun;
@@ -35,7 +35,7 @@ class Configuration {
 }
 
 (String, Configuration) createAndValidateConfiguration(
-  PoddarConfigData poddarConfigData,
+  AppConfigData poddarConfigData,
   Arguments arguments,
 ) {
   final pods = poddarConfigData.configsPods;
@@ -88,8 +88,19 @@ class Configuration {
       dryRun: arguments.dryRun ? true : poddarConfigData.dryRun,
       action: arguments.action,
       targets: targetsSet.toList(),
-      configsPath: poddarConfigData.configsPath,
-      podsPath: poddarConfigData.podsPath,
+      configsPath: _correctPath(poddarConfigData.configsPath),
+      podsPath: _correctPath(poddarConfigData.podsPath),
     ),
   );
+}
+
+String _correctPath(String path) {
+  var pathCorrected = path;
+  if (!path.endsWith("/")) {
+    pathCorrected = "$path/";
+  }
+  if (!pathCorrected.startsWith("/")) {
+    pathCorrected = "./$pathCorrected";
+  }
+  return pathCorrected;
 }
