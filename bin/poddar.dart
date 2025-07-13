@@ -16,8 +16,8 @@
  */
 
 import 'package:poddar/arguments.dart';
-import 'package:poddar/configuration.dart';
-import 'package:poddar/constant.dart' as constant;
+import 'package:poddar/app_configuration.dart';
+import 'package:poddar/constants.dart' as constant;
 import 'package:poddar/data/pod_config.dart';
 import 'package:poddar/data/app_config.dart';
 
@@ -42,16 +42,16 @@ void main(List<String> args) async {
       print(errorAppConfigData);
     } else {
       // create and validate app configuration
-      final (errorConfiguration, configuration) =
-          createAndValidateConfiguration(appConfigData, arguments);
+      final (errorConfiguration, appConfiguration) =
+          createAndValidateAppConfiguration(appConfigData, arguments);
       if (errorConfiguration.isNotEmpty) {
         print(errorConfiguration);
       } else {
         //
         var errorPodConfiguration = "";
-        for (final target in configuration.targets) {
+        for (final target in appConfiguration.targets) {
           final (error, podConfigData) = await readPodConfigData(
-            configuration.configsPath + target,
+            appConfiguration.configsPath + target,
           );
           if (error.isNotEmpty) {
             errorPodConfiguration = error;

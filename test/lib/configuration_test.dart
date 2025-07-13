@@ -16,7 +16,7 @@
  */
 
 import 'package:poddar/arguments.dart';
-import 'package:poddar/configuration.dart';
+import 'package:poddar/app_configuration.dart';
 import 'package:poddar/data/app_config.dart';
 import 'package:test/test.dart';
 
@@ -27,7 +27,7 @@ void main() {
       final (_, appConfigData) = await readAppConfigData(
         "./test/configs/poddar_config_2",
       );
-      final (error, configuration) = createAndValidateConfiguration(
+      final (error, configuration) = createAndValidateAppConfiguration(
         appConfigData,
         arguments,
       );
@@ -47,7 +47,7 @@ void main() {
         );
         expect(pcderror, "");
         expect(appConfigData.dryRun, isFalse);
-        final (error, configuration) = createAndValidateConfiguration(
+        final (error, configuration) = createAndValidateAppConfiguration(
           appConfigData,
           arguments,
         );
@@ -62,7 +62,7 @@ void main() {
         "./test/configs/poddar_config_empty_group",
       );
       expect(pcderror, "");
-      final (error, configuration) = createAndValidateConfiguration(
+      final (error, configuration) = createAndValidateAppConfiguration(
         appConfigData,
         arguments,
       );
@@ -75,7 +75,7 @@ void main() {
         "./test/configs/poddar_config_empty_group_2",
       );
       expect(pcderror, "");
-      final (error, configuration) = createAndValidateConfiguration(
+      final (error, configuration) = createAndValidateAppConfiguration(
         appConfigData,
         arguments,
       );
@@ -90,7 +90,7 @@ void main() {
           "./test/configs/poddar_config_double_name",
         );
         expect(pcderror, "");
-        final (error, configuration) = createAndValidateConfiguration(
+        final (error, configuration) = createAndValidateAppConfiguration(
           poddarConfigData,
           arguments,
         );
@@ -104,7 +104,7 @@ void main() {
         "./test/configs/poddar_config_2",
       );
       expect(pcderror, "");
-      final (error, configuration) = createAndValidateConfiguration(
+      final (error, configuration) = createAndValidateAppConfiguration(
         poddarConfigData,
         arguments,
       );
@@ -119,7 +119,7 @@ void main() {
           "./test/configs/poddar_config_2",
         );
         expect(pcderror, "");
-        final (error, configuration) = createAndValidateConfiguration(
+        final (error, configuration) = createAndValidateAppConfiguration(
           poddarConfigData,
           arguments,
         );
@@ -134,7 +134,7 @@ void main() {
         "./test/configs/poddar_config_2",
       );
       expect(pcderror, "");
-      final (error, configuration) = createAndValidateConfiguration(
+      final (error, configuration) = createAndValidateAppConfiguration(
         poddarConfigData,
         arguments,
       );
@@ -151,7 +151,7 @@ void main() {
         "./test/configs/poddar_config_2",
       );
       expect(pcderror, "");
-      final (error, configuration) = createAndValidateConfiguration(
+      final (error, configuration) = createAndValidateAppConfiguration(
         poddarConfigData,
         arguments,
       );

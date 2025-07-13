@@ -15,7 +15,7 @@
  * this program.  If not, see <https://www.gnu.org/licenses/>. 
  */
 
-import 'package:poddar/constant.dart' show validActions;
+import 'package:poddar/constants.dart' show validActions;
 
 class Arguments {
   final bool showHelp;

@@ -18,14 +18,14 @@
 import 'package:poddar/arguments.dart';
 import 'package:poddar/data/app_config.dart';
 
-class Configuration {
+class AppConfiguration {
   final bool dryRun;
   final String action;
   final List<String> targets;
   final String configsPath;
   final String podsPath;
 
-  const Configuration({
+  const AppConfiguration({
     this.dryRun = false,
     this.action = "",
     this.targets = const [],
@@ -34,7 +34,7 @@ class Configuration {
   });
 }
 
-(String, Configuration) createAndValidateConfiguration(
+(String, AppConfiguration) createAndValidateAppConfiguration(
   AppConfigData poddarConfigData,
   Arguments arguments,
 ) {
@@ -43,12 +43,15 @@ class Configuration {
 
   for (final entry in groups.entries) {
     if (entry.value.isEmpty) {
-      return ("Group '${entry.key}' cannot be emtpy!", const Configuration());
+      return (
+        "Group '${entry.key}' cannot be emtpy!",
+        const AppConfiguration(),
+      );
     }
     if (pods.contains(entry.key)) {
       return (
         "Group with name '${entry.key}' already defined as pod!",
-        const Configuration(),
+        const AppConfiguration(),
       );
     }
   }
@@ -76,14 +79,17 @@ class Configuration {
       }
       // if target was not found, return error
       if (!found) {
-        return ("Target '$target' not found in config!", const Configuration());
+        return (
+          "Target '$target' not found in config!",
+          const AppConfiguration(),
+        );
       }
     }
   }
 
   return (
     "",
-    Configuration(
+    AppConfiguration(
       // arguments dryRun overrides config dryRun if true, better safe than sorry
       dryRun: arguments.dryRun ? true : poddarConfigData.dryRun,
       action: arguments.action,
